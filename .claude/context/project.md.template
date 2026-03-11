@@ -1,0 +1,95 @@
+# Project: {{PROJECT_NAME}}
+**Generated**: {{DATE}} | **Re-run `/setup_project` to update**
+
+> This file is the source of truth for all `.claude/` templates.
+> Edit directly to correct anything `/setup_project` got wrong.
+
+## Description
+
+{{PROJECT_DESCRIPTION}}
+
+## Language & Framework
+
+| Property | Value |
+|----------|-------|
+| Language | {{LANGUAGE}} |
+| Framework | {{FRAMEWORK}} |
+| File extension | `{{FILE_EXT}}` |
+
+## Commands
+
+| Purpose | Command |
+|---------|---------|
+| Run tests | `{{TEST_COMMAND}}` |
+| Run specific test | `{{TEST_COMMAND}} {{TEST_DIR}}/path/file.{{TEST_EXT}}` |
+| Lint / checks | `{{LINT_COMMAND}}` |
+| Format | `{{FORMAT_COMMAND}}` |
+
+## Module / Naming Conventions
+
+| Role | Convention |
+|------|-----------|
+| Business logic | `{{MODULE_PREFIX}}` |
+| Web / API layer | `{{WEB_MODULE_PREFIX}}` |
+| Schemas / Models | `{{SCHEMA_MODULE_PREFIX}}` |
+| Workers / Jobs | `{{WORKER_MODULE_PREFIX}}` |
+
+## Directory Layout
+
+| Purpose | Path |
+|---------|------|
+| Business logic / services | `{{LIB_DIR}}` |
+| Web layer | `{{WEB_DIR}}` |
+| Schemas / models | `{{SCHEMA_DIR}}` |
+| Background workers | `{{WORKERS_DIR}}` |
+| Tests | `{{TEST_DIR}}` |
+| Config | `{{CONFIG_DIR}}` |
+| Migrations | `{{MIGRATIONS_DIR}}` |
+
+## Data Layer
+
+| Property | Value |
+|----------|-------|
+| Database | {{DB_TECHNOLOGY}} |
+| ORM / Query builder | {{ORM}} |
+| Background jobs | {{BACKGROUND_JOBS}} |
+| Caching | {{CACHE_TECHNOLOGY}} |
+| Real-time / Pub-Sub | {{REALTIME_TECHNOLOGY}} |
+
+## Core Domains
+
+<!-- List the main business/feature areas as bullet points, e.g.:
+- **Users** — authentication, profiles, permissions
+- **Orders** — creation, fulfillment, refunds
+- **Inventory** — stock tracking, SKUs, variants
+-->
+
+{{DOMAIN_LIST}}
+
+## External Integrations
+
+<!-- List each external service: name, purpose, key config location, e.g.:
+- **Stripe** — payments; config: config/runtime.exs; key module: MyApp.Payments
+- **Discord** — OAuth + bot; config: config/runtime.exs
+- **AWS S3** — file storage; config: config/runtime.exs
+-->
+
+{{INTEGRATION_LIST}}
+
+## Architecture Patterns & Notes
+
+<!-- Anything Claude should know about conventions, gotchas, or patterns
+that are project-specific and won't be obvious from reading the code. -->
+
+{{ARCHITECTURE_NOTES}}
+
+## Search Patterns
+
+| Find | Grep Pattern |
+|------|-------------|
+| Data model | `{{SCHEMA_SEARCH_PATTERN}}` |
+| Business logic | `{{CONTEXT_SEARCH_PATTERN}}` |
+| Web handler | `{{CONTROLLER_SEARCH_PATTERN}}` |
+| Worker / job | `{{WORKER_SEARCH_PATTERN}}` |
+| Transaction | `{{TRANSACTION_PATTERN}}` |
+| External integration | `{{INTEGRATION_GREP_PATTERN}}` |
