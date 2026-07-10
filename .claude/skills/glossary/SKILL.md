@@ -1,6 +1,16 @@
+---
+name: glossary
+description: Use to build or extend a domain terminology reference from code evidence — entities, status values, business rules, and abbreviations.
+---
+
 # Domain Glossary
 
 Understand project-specific terminology.
+
+## When to Use
+
+- Onboarding to unfamiliar domain language used in the codebase
+- Need a persistent reference for entity/status/abbreviation meanings
 
 ## Process
 
@@ -42,3 +52,4 @@ Understand project-specific terminology.
 ## Persisting the Glossary
 
 When new domain terms are discovered, add to `.claude/thoughts/glossary.md` for persistence across sessions.
+

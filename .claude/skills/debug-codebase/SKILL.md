@@ -1,13 +1,23 @@
+---
+name: debug-codebase
+description: Use when investigating a bug or unexpected behavior without modifying code yet — traces the error, checks common failure patterns by layer, and proposes a hypothesis with fix options.
+---
+
 # Debug Issues
 
 Investigate without modifying. Understand problems, then decide how to proceed.
+
+## When to Use
+
+- Something is broken or behaving unexpectedly and the cause isn't yet known
+- Need a documented hypothesis before deciding on a fix
 
 ## Process
 
 1. **Understand problem**: Expected vs actual, reproducible?
 2. **Gather context** (parallel):
    - Git: `git log --oneline -10`, `git status`
-   - Locate related files using locator agent
+   - Locate related files using the codebase-locator agent
 3. **Trace error**: Find source, read code, trace call stack
 4. **Check common issues** (see below)
 5. **Form hypothesis** with evidence and verification steps
@@ -63,3 +73,4 @@ Actual: [what happens]
 ### Verification
 1. [step to verify fix]
 ```
+

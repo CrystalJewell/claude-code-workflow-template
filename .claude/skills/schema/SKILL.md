@@ -1,11 +1,20 @@
+---
+name: schema
+description: Use to understand the data model — maps tables/models and relationships, and flags query performance issues like N+1s and missing indexes.
+---
+
 # Schema & Data Model Analysis
 
 Understand the data model and identify query performance issues.
 
+## When to Use
+
+- Need to understand entities and their relationships before changing data-layer code
+- Suspect a query-performance issue (N+1, missing index, over-fetching)
+
 ## Usage
 
-`/schema [entity name]` — Specific model/schema
-`/schema` — Full data model overview
+Provide a specific entity/model name for a focused analysis, or omit for a full data model overview.
 
 ## Process
 
@@ -79,3 +88,4 @@ Tables using `deleted_at` (if applicable): [list]
 4. **Missing Indexes** — Frequent filters on non-indexed columns
 5. **Over-Fetching** — Loading unused associations
 6. **Nested Transactions** — Transactions inside transactions
+

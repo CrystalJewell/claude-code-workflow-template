@@ -1,6 +1,15 @@
+---
+name: describe-pr
+description: Use when preparing a pull request description — analyzes all commits and diff on the branch since it diverged from the base, and writes a short, reviewer-friendly description.
+---
+
 # Describe Pull Request
 
 Create short, reviewer-friendly PR descriptions.
+
+## When to Use
+
+- Branch is ready to open (or update) a pull request
 
 ## Style
 
@@ -66,3 +75,4 @@ gh pr create --title "title" --body "$(cat <<'BODY'
 BODY
 )"
 ```
+

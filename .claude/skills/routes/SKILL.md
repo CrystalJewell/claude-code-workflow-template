@@ -1,6 +1,15 @@
+---
+name: routes
+description: Use to map all web/API routes to their handlers and auth layers, including the routing-table entry for incoming webhook endpoints. For what a webhook triggers on the receiving/external-service side, use the integrations skill.
+---
+
 # Routes & Endpoints
 
 Map all routes to their handlers.
+
+## When to Use
+
+- Need to understand what endpoints exist and which handler/auth layer serves each
 
 ## Process
 
@@ -44,3 +53,4 @@ Map all routes to their handlers.
 **Feature A**: `N` routes
 **Feature B**: `M` routes
 ```
+

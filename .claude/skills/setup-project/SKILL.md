@@ -1,6 +1,17 @@
+---
+name: setup-project
+description: Use when starting a new engagement on this project, or when project structure has changed significantly — auto-discovers the stack, generates .claude/context/project.md, and substitutes {{PLACEHOLDER}} values across all skill files. Run this first, before any other skill.
+---
+
 # Setup Project
 
 Initialize all Claude Code templates for this project. Run once when starting a new engagement.
+
+## When to Use
+
+- First time working in this project with the Claude Code skill workflow
+- Project structure changed significantly since the last run
+- `.claude/context/project.md` is missing or stale
 
 ## Process
 
@@ -89,7 +100,7 @@ Present a formatted summary of detected values. Ask the user to confirm or corre
 **Detected integrations**: Stripe, Discord, AWS S3
 
 **Missing — please provide**:
-1. Project description (1-2 sentences for context in commands)
+1. Project description (1-2 sentences for context in skills)
 2. Core domain areas (e.g. "Users, Heroes, Tables, Payments")
 3. Any integrations not detected above?
 
@@ -151,7 +162,7 @@ Write the confirmed values to `.claude/context/project.md`:
 
 ### Phase 5: Rewrite All Templates
 
-Do a targeted find-replace pass across all `.claude/` files, substituting `{{PLACEHOLDER}}` values from `project.md`. Key substitutions:
+Do a targeted find-replace pass across all `.claude/` files (skills, agents, context), substituting `{{PLACEHOLDER}}` values from `project.md`. Key substitutions:
 
 | Template Variable | Resolves To |
 |------------------|-------------|
@@ -165,19 +176,21 @@ Do a targeted find-replace pass across all `.claude/` files, substituting `{{PLA
 | `{{WEB_MODULE_PREFIX}}` | e.g. `MyAppWeb` |
 | `{{WORKERS_DIR}}` | e.g. `lib/myapp/workers/` |
 
-### Phase 6: Scaffold Domain Research Commands
+### Phase 6: Scaffold Domain Research Skills
 
-For each confirmed core domain, offer to generate a domain-specific research command:
+For each confirmed core domain, offer to generate a domain-specific research skill:
 
 ```
 You listed these core domains: Users, Orders, Inventory
 
-Would you like me to generate /research_users, /research_orders, 
-/research_inventory commands? (Modeled on the generic /research_codebase 
-but pre-scoped to each domain's files and patterns)
+Would you like me to generate research-users, research-orders,
+research-inventory skills? (Modeled on the generic research-codebase
+skill but pre-scoped to each domain's files and patterns)
 ```
 
-If yes, generate each one to `.claude/commands/research_{{domain}}.md`.
+If yes, generate each one to `.claude/skills/research-{{domain}}/SKILL.md`, using the same frontmatter shape, Process, and Research Doc Template as the `research-codebase` skill, with:
+- `description` naming the specific domain (e.g. "Use for open-ended research into the Users domain specifically...")
+- Search Reference patterns scoped to that domain's known files/modules
 
 ### Phase 7: Final Report
 
@@ -186,14 +199,14 @@ If yes, generate each one to `.claude/commands/research_{{domain}}.md`.
 
 **Files updated**: N
 **Context generated**: `.claude/context/project.md`
-**Domain commands created**: /research_x, /research_y (if applicable)
+**Domain skills created**: research-x, research-y (if applicable)
 
 Suggested first steps:
-1. `/overview` — orientation pass
-2. `/schema` — understand the data model  
-3. `/routes` — map the endpoints
+1. overview skill — orientation pass
+2. schema skill — understand the data model
+3. routes skill — map the endpoints
 
-Re-run `/setup_project` anytime the project structure changes significantly.
+Re-run the setup-project skill anytime the project structure changes significantly.
 ```
 
 ## Re-run Behavior
@@ -204,3 +217,4 @@ If `.claude/context/project.md` already exists:
 3. Present only the **diffs** — what changed or couldn't be confirmed
 4. Ask to apply changes selectively or wholesale
 5. Never overwrite project.md without confirmation
+

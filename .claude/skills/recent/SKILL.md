@@ -1,11 +1,19 @@
+---
+name: recent
+description: Use for a quick git-log-driven summary of recent changes in an area or across the project. Not for understanding how a feature actually works — use the research-codebase skill for that.
+---
+
 # Recent Changes
 
 Git-powered analysis of what changed recently in an area.
 
+## When to Use
+
+- Want a quick summary of recent commits/activity, project-wide or scoped to a path
+
 ## Usage
 
-`/recent <path or area>` — Changes in specific area
-`/recent` — Overall recent activity
+Provide a path or area to scope the analysis, or omit for overall recent activity.
 
 ## Process
 
@@ -48,3 +56,4 @@ Git-powered analysis of what changed recently in an area.
 [git status output if any]
 ```
 ```
+

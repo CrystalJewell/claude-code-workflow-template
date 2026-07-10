@@ -1,6 +1,17 @@
+---
+name: overview
+description: Use when starting a new session or before a major architectural change, for a bird's-eye view of the project's domains, architecture, and entry points. Not for deep dives into one facet — use the schema, routes, or integrations skills for those.
+---
+
 # Project Overview
 
 Bird's eye view of architecture without deep-diving.
+
+## When to Use
+
+- Starting a new session or engagement
+- Before major architectural changes
+- Quick orientation after time away
 
 ## Process
 
@@ -53,8 +64,3 @@ Bird's eye view of architecture without deep-diving.
 ```
 ```
 
-## When to Use
-
-- Starting a new session or engagement
-- Before major architectural changes
-- Quick orientation after time away

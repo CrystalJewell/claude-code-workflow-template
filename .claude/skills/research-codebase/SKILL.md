@@ -1,6 +1,16 @@
+---
+name: research-codebase
+description: Use for open-ended research into how an existing feature or subsystem works, without suggesting changes — spawns parallel search agents and writes findings to .claude/thoughts/research/. Not for a quick blast-radius check before changing a specific target (use the impact skill), not for a first orientation pass across the whole project (use the overview skill), and not for a git-log summary of what changed recently (use the recent skill).
+---
+
 # Research Codebase
 
 Document and explain existing code. Do NOT suggest improvements.
+
+## When to Use
+
+- Need to understand how a feature or subsystem currently works, in depth
+- Before planning a change that touches unfamiliar code
 
 ## Process
 
@@ -43,3 +53,4 @@ Document and explain existing code. Do NOT suggest improvements.
 | Handler | `{{CONTROLLER_SEARCH_PATTERN}}` |
 | Worker | `{{WORKER_SEARCH_PATTERN}}` |
 | Transactions | `{{TRANSACTION_PATTERN}}` |
+

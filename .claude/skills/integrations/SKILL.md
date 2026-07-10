@@ -1,6 +1,15 @@
+---
+name: integrations
+description: Use to map connections to external services — API clients, config/env vars, and what each webhook handler does once a request lands. For the routing-table entry itself (path, method, auth), use the routes skill.
+---
+
 # External Integrations
 
 Map connections to external services.
+
+## When to Use
+
+- Need to understand what third-party services the project talks to and how
 
 ## Process
 
@@ -45,3 +54,4 @@ Map connections to external services.
 |---------|--------|---------|
 | [Service] | [how to verify] | Ns |
 ```
+

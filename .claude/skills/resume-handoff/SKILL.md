@@ -1,6 +1,15 @@
+---
+name: resume-handoff
+description: Use at the start of a session to resume from a previous handoff document — validates whether the branch, commits, and tests still match what the handoff described. Not for writing a handoff — use the create-handoff skill for that.
+---
+
 # Resume from Handoff
 
 Resume work by validating state and continuing where left off.
+
+## When to Use
+
+- Starting a session that continues previously-handed-off work
 
 ## Process
 
@@ -41,3 +50,4 @@ Resume work by validating state and continuing where left off.
 
 **Tests failing**:
 > ⚠️ Tests failing: [summary]. Fix first/Investigate/Proceed?
+

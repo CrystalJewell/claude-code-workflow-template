@@ -1,6 +1,16 @@
+---
+name: commit
+description: Use when you have changes ready to save as a git commit — runs safety checks (secrets, debug code, tests, lint) and drafts a structured commit message for approval before committing.
+---
+
 # Commit Changes
 
 Create well-structured commit messages.
+
+## When to Use
+
+- Working tree has changes that form a coherent, reviewable unit
+- Before ending a session or moving to PR description
 
 ## Process
 
@@ -51,5 +61,6 @@ Fixes #123
 ## After Commit
 
 - More changes? Continue
-- Ready for review? `/describe_pr`
-- End session? `/create_handoff`
+- Ready for review? Use the describe-pr skill
+- End session? Use the create-handoff skill
+

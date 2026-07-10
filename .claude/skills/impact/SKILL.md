@@ -1,10 +1,19 @@
+---
+name: impact
+description: Use before modifying a specific module, function, class, or file, to understand its blast radius — finds callers, dependents, and test coverage, then assesses change risk. Not for open-ended feature research — use the research-codebase skill for that.
+---
+
 # Impact Analysis
 
 Understand the blast radius before modifying code.
 
+## When to Use
+
+- About to change a specific, named target and need to know what depends on it
+
 ## Usage
 
-`/impact <module, function, class, or file>`
+Provide a target: module, function, class, or file to analyze.
 
 ## Process
 
@@ -57,3 +66,4 @@ Understand the blast radius before modifying code.
 ### Recommended Approach
 1. [suggestion based on analysis]
 ```
+

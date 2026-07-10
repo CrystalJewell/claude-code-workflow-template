@@ -1,6 +1,16 @@
+---
+name: create-plan
+description: Use when you need a structured, actionable implementation plan for a feature or change — researches the current codebase state, defines success criteria, and writes a phased plan to .claude/thoughts/plans/.
+---
+
 # Create Implementation Plan
 
 Create detailed, actionable plans through structured research.
+
+## When to Use
+
+- A feature or change is well-understood enough to plan, but not yet broken into phases
+- Before starting implementation on anything non-trivial
 
 ## Process
 
@@ -48,11 +58,12 @@ Create detailed, actionable plans through structured research.
 
 ## Before Planning
 
-Consider running first:
-- `/overview` — orientation
-- `/schema` — if data model changes are involved
-- `/impact` — blast radius of proposed changes
+Consider using first:
+- `overview` skill — orientation
+- `schema` skill — if data model changes are involved
+- `impact` skill — blast radius of proposed changes
 
 ## Key Patterns to Respect
 
 *Loaded from `.claude/context/project.md` — see Architecture Patterns and Core Domains sections.*
+

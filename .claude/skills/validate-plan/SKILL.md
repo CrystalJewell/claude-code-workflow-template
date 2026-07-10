@@ -1,6 +1,16 @@
+---
+name: validate-plan
+description: Use after implementing a plan, to verify each phase was actually completed and check for regressions before shipping. Not for executing the plan — use the implement-plan skill for that.
+---
+
 # Validate Plan Implementation
 
 Verify plan was executed correctly.
+
+## When to Use
+
+- Implementation of a plan is reportedly complete and needs independent verification
+- Before moving to `describe-pr`, to confirm nothing was missed
 
 ## Process
 
@@ -41,8 +51,8 @@ Verify plan was executed correctly.
 - [ ] [item]
 
 ### Next Steps
-**Complete**: `/describe_pr`
-**Incomplete**: Resume with `/implement_plan`
+**Complete**: use the describe-pr skill
+**Incomplete**: resume with the implement-plan skill
 ```
 
 ## Validation Checklist
@@ -52,3 +62,4 @@ Verify plan was executed correctly.
 - [ ] `{{LINT_COMMAND}}` passes
 - [ ] Follows existing patterns
 - [ ] New code has tests
+

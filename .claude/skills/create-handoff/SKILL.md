@@ -1,6 +1,16 @@
+---
+name: create-handoff
+description: Use at the end of a session to capture git state, learnings, and next steps for continuity. Not for resuming prior work — use the resume-handoff skill for that.
+---
+
 # Create Handoff Document
 
 Capture session context for seamless resumption.
+
+## When to Use
+
+- Ending a session with work still in progress
+- Handing off to another session or another person
 
 ## Process
 
@@ -42,12 +52,12 @@ Capture session context for seamless resumption.
 {{TEST_COMMAND}}: [passing/X failures] | {{LINT_COMMAND}}: [status]
 
 ---
-*Resume with `/resume_handoff [this-file]`*
+*Resume with the resume-handoff skill, passing this file*
 ```
 
 ## Related
 
-Use `/recent` to capture what changed during the session.
+Use the recent skill to capture what changed during the session.
 
 ## Principles
 
@@ -55,3 +65,4 @@ Use `/recent` to capture what changed during the session.
 - Use `file:line` references
 - Capture non-obvious learnings
 - Actionable next steps
+

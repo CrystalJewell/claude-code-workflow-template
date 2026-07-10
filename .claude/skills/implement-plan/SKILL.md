@@ -1,6 +1,16 @@
+---
+name: implement-plan
+description: Use when executing an approved implementation plan phase by phase, with verification after each phase. Not for writing the plan itself — use the create-plan skill for that.
+---
+
 # Implement Plan
 
 Execute approved plans phase by phase with verification.
+
+## When to Use
+
+- A plan already exists in `.claude/thoughts/plans/` and is approved
+- Resuming a partially-implemented plan (checks existing `[x]` progress markers)
 
 ## Process
 
@@ -34,7 +44,7 @@ If implementation differs from plan:
 
 **Files**: [list]
 
-Ready for review or create commit?
+Ready for review or create a commit? Use the validate-plan skill, then the commit skill.
 ```
 
 ## Commands
@@ -44,3 +54,4 @@ Ready for review or create commit?
 {{TEST_COMMAND}} {{TEST_DIR}}/path/      # Specific
 {{LINT_COMMAND}}                         # Compile + lint + format check
 ```
+
