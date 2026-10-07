@@ -30,32 +30,22 @@ Create well-structured commit messages.
 4. **Draft message**:
    ```
    type: Short summary (imperative mood)
-
-   [Optional: why, not what]
-
-   [Optional: Fixes #123]
    ```
 5. **Present for approval** with files and checks status
 6. **Execute**: `git add [files] && git commit -m "message"`
 
 ## Message Guidelines
 
-- Subject: Max 50 chars, imperative ("Add" not "Added"), no period
-- Body: Wrap 72 chars, explain why not what
+- Subject only: Max 50 chars, imperative ("Add" not "Added"), no period
 
 ## Examples
 
 ```
 feat: Add stat recalculation on level up
-
-Stats now recalculate when entities level, applying modifiers.
 ```
 
 ```
 fix: Prevent duplicate signups for same session
-
-Added optimistic locking to signup creation.
-Fixes #123
 ```
 
 ## After Commit
