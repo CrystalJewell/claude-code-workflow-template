@@ -1,6 +1,6 @@
 ---
 name: implement-plan
-description: Use when executing an approved implementation plan phase by phase, with verification after each phase. Not for writing the plan itself — use the create-plan skill for that.
+description: Use when executing an approved implementation plan phase by phase, with verification after each phase. Not for writing the plan itself — use the create-plan skill for that. If the superpowers plugin is installed, prefer superpowers:executing-plans or superpowers:subagent-driven-development instead.
 ---
 
 # Implement Plan

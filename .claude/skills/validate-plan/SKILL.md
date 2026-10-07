@@ -1,6 +1,6 @@
 ---
 name: validate-plan
-description: Use after implementing a plan, to verify each phase was actually completed and check for regressions before shipping. Not for executing the plan — use the implement-plan skill for that.
+description: Use after implementing a plan, to verify each phase was actually completed and check for regressions before shipping. Not for executing the plan — use the implement-plan skill for that. If the superpowers plugin is installed, prefer superpowers:verification-before-completion and superpowers:requesting-code-review instead.
 ---
 
 # Validate Plan Implementation

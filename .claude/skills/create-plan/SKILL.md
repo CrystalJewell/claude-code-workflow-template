@@ -1,6 +1,6 @@
 ---
 name: create-plan
-description: Use when you need a structured, actionable implementation plan for a feature or change — researches the current codebase state, defines success criteria, and writes a phased plan to .claude/thoughts/plans/.
+description: Use when you need a structured, actionable implementation plan for a feature or change — researches the current codebase state, defines success criteria, and writes a phased plan to .claude/thoughts/plans/. If the superpowers plugin is installed, prefer superpowers:brainstorming and then superpowers:writing-plans instead.
 ---
 
 # Create Implementation Plan

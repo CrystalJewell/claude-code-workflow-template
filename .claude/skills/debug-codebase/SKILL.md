@@ -1,6 +1,6 @@
 ---
 name: debug-codebase
-description: Use when investigating a bug or unexpected behavior without modifying code yet — traces the error, checks common failure patterns by layer, and proposes a hypothesis with fix options.
+description: Use when investigating a bug or unexpected behavior without modifying code yet — traces the error, checks common failure patterns by layer, and proposes a hypothesis with fix options. If the superpowers plugin is installed, prefer superpowers:systematic-debugging instead.
 allowed-tools: Read Grep Glob Agent Bash(git log *) Bash(git status *)
 ---
 
