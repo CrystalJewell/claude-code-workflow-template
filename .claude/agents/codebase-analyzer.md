@@ -49,7 +49,5 @@ Refer to `.claude/context/project.md` for directory layout. Common types:
 Internal: [modules] | External: [libraries]
 
 ### Data Flow
-```
 User action → handler → service → data layer → [pub/sub or response]
-```
 ```

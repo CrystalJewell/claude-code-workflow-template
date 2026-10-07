@@ -64,9 +64,7 @@ use the `recent` skill for that instead.
 | `apps/core/lib/core/feature.ex` | 45 lines | 3 commits |
 
 ### Uncommitted Changes
-```
 [git status output if any]
-```
 ```
 
 ## Common Mistakes
