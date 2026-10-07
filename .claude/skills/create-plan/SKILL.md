@@ -15,13 +15,14 @@ Create detailed, actionable plans through structured research.
 ## Process
 
 1. **Gather context**: Read mentioned files, check `.claude/thoughts/` for history
-2. **Research current state**: Spawn parallel Explore tasks for patterns, dependencies, tests
+2. **Research current state**: Spawn parallel Explore subagents (Agent tool) for patterns, dependencies, tests
 3. **Identify approaches**: If multiple valid options exist, present trade-offs and ask user
 4. **Define success criteria**:
    - Automated: `{{TEST_COMMAND}}`, `{{LINT_COMMAND}}`
    - Manual: UI behavior, edge cases
 5. **Write plan** to `.claude/thoughts/plans/YYYY-MM-DD-description.md`
-6. **Present summary** for approval
+6. **Consult the advisor** if one is available: a plan is cheapest to correct before approval
+7. **Present summary** for approval
 
 ## Plan Template
 

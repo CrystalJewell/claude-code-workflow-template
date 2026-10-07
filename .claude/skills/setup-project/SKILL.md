@@ -1,6 +1,7 @@
 ---
 name: setup-project
 description: Use when starting a new engagement on this project, or when project structure has changed significantly — auto-discovers the stack, generates .claude/context/project.md, and substitutes {{PLACEHOLDER}} values across all skill files. Run this first, before any other skill.
+disable-model-invocation: true
 ---
 
 # Setup Project
@@ -192,13 +193,34 @@ If yes, generate each one to `.claude/skills/research-{{domain}}/SKILL.md`, usin
 - `description` naming the specific domain (e.g. "Use for open-ended research into the Users domain specifically...")
 - Search Reference patterns scoped to that domain's known files/modules
 
-### Phase 7: Final Report
+### Phase 7: Load Context Into Sessions
+
+Files in `.claude/context/` are not loaded automatically. Skills and agents read them on demand, but an `@import` makes `project.md` part of every session. It costs a few hundred tokens per session, so offer it and let the user choose.
+
+1. Check whether the import already exists in any of the files below. If so, skip this phase.
+2. Check whether the setup is shared or personal:
+   ```bash
+   git check-ignore -q .claude/context/project.md && echo personal || echo shared
+   ```
+3. Offer only the options that fit, with the recommended one first. Imports resolve relative to the file that contains them, so the path differs per option:
+
+   | Setup | Target file | Line to add |
+   |-------|-------------|-------------|
+   | Shared (tracked in git) | `CLAUDE.md` at the project root | `@.claude/context/project.md` |
+   | Personal (gitignored), a `.claude/CLAUDE.md` exists or the user prefers it | `.claude/CLAUDE.md` | `@context/project.md` |
+   | Personal (gitignored), otherwise | `CLAUDE.local.md` at the project root | `@.claude/context/project.md` |
+
+   When `.claude/` is gitignored, never write the import to the shared root `CLAUDE.md`. Teammates would receive an import that points at a file they don't have.
+4. Create the target file if it doesn't exist, append the line, and show the user what changed. Skip this phase if the user declines.
+
+### Phase 8: Final Report
 
 ```
 ## Setup Complete: {{PROJECT_NAME}}
 
 **Files updated**: N
 **Context generated**: `.claude/context/project.md`
+**Context loaded via**: `@import` in [file] (or "not imported")
 **Domain skills created**: research-x, research-y (if applicable)
 
 Suggested first steps:

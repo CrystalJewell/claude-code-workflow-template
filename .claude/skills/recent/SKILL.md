@@ -1,6 +1,7 @@
 ---
 name: recent
 description: Use for a quick git-log-driven summary of recent changes in an area or across the project. Not for understanding how a feature actually works — use the research-codebase skill for that.
+allowed-tools: Read Bash(git log *) Bash(git status *) Bash(git diff *)
 ---
 
 # Recent Changes

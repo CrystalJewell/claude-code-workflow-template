@@ -24,7 +24,7 @@ Execute approved plans phase by phase with verification.
    - Run `{{TEST_COMMAND}}` and `{{LINT_COMMAND}}` after changes
    - Mark items complete in plan: `- [x] file.{{FILE_EXT}} ✓`
    - Pause for manual verification if needed
-5. **On completion**: Run full test suite, update plan status, present summary
+5. **On completion**: Run full test suite, update plan status, consult the advisor if one is available, present summary
 
 ## Handling Obstacles
 

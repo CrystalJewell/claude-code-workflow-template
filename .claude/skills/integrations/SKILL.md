@@ -1,6 +1,7 @@
 ---
 name: integrations
 description: Use to map connections to external services — API clients, config/env vars, and what each webhook handler does once a request lands. For the routing-table entry itself (path, method, auth), use the routes skill.
+allowed-tools: Read Grep Glob
 ---
 
 # External Integrations

@@ -1,7 +1,7 @@
 # Framework Notes Library
 
-Used by `/setup_project` to inject framework-specific content into agents and commands.
-Not a slash command — internal reference only.
+Used by the `setup-project` skill to inject framework-specific content into agents and skills.
+Not a skill — internal reference only.
 
 ---
 

@@ -1,6 +1,7 @@
 ---
 name: overview
 description: Use when starting a new session or before a major architectural change, for a bird's-eye view of the project's domains, architecture, and entry points. Not for deep dives into one facet — use the schema, routes, or integrations skills for those.
+allowed-tools: Read Grep Glob
 ---
 
 # Project Overview

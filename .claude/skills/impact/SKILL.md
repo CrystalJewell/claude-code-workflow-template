@@ -1,6 +1,7 @@
 ---
 name: impact
 description: Use before modifying a specific module, function, class, or file, to understand its blast radius — finds callers, dependents, and test coverage, then assesses change risk. Not for open-ended feature research — use the research-codebase skill for that.
+allowed-tools: Read Grep Glob
 ---
 
 # Impact Analysis

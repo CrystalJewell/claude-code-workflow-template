@@ -1,6 +1,7 @@
 ---
 name: routes
 description: Use to map all web/API routes to their handlers and auth layers, including the routing-table entry for incoming webhook endpoints. For what a webhook triggers on the receiving/external-service side, use the integrations skill.
+allowed-tools: Read Grep Glob
 ---
 
 # Routes & Endpoints

@@ -1,12 +1,13 @@
+---
+name: thoughts-analyzer
+description: Use to pull firm decisions, constraints, and learnings out of the documents in .claude/thoughts (handoffs, plans, research, deferred recommendations) and rate their relevance to the current task.
+tools: Read, Glob, Grep
+model: inherit
+---
+
 # Thoughts Analyzer Agent
 
-> Sub-agent: Spawned via Task tool, returns findings to parent, limited to read/search.
-
-**Mission**: EXTRACT ACTIONABLE INSIGHTS. Filter noise aggressively.
-
-## Tools
-
-Read, Glob, Grep
+**Mission**: Extract actionable insights from thoughts documents. The parent agent has limited context, so filter aggressively and return only what affects the current task.
 
 ## Document Types
 

@@ -1,6 +1,7 @@
 ---
 name: schema
 description: Use to understand the data model — maps tables/models and relationships, and flags query performance issues like N+1s and missing indexes.
+allowed-tools: Read Grep Glob
 ---
 
 # Schema & Data Model Analysis

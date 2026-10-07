@@ -1,6 +1,7 @@
 ---
 name: branch-changes
 description: Use when you want a summary of everything changed on the current local git branch — commits since it diverged from the base branch, file-level diff stats, and any uncommitted work
+allowed-tools: Read Bash(git log *) Bash(git status *) Bash(git diff *) Bash(git merge-base *) Bash(git remote show *)
 ---
 
 # Branch Changes

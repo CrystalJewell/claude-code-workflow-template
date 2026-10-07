@@ -1,6 +1,6 @@
 # Shared Context Reference
 
-Reference for commands and agents. Values populated by `/setup_project`.
+Reference for skills and agents. Values populated by the `setup-project` skill.
 
 ## Project: {{PROJECT_NAME}}
 
@@ -63,4 +63,4 @@ Reference for commands and agents. Values populated by `/setup_project`.
 
 ## Agent Sub-task Note
 
-> Sub-agents: Spawned via Task tool, return findings to parent, limited to read/search.
+> Subagents are spawned through the Agent tool and return findings to the parent. The agent definitions in `.claude/agents/` restrict them to read/search tools.

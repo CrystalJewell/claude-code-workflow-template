@@ -18,6 +18,7 @@ The setup skill will:
 - Ask you to confirm and fill in any gaps
 - Rewrite all templates with project-specific context
 - Generate `.claude/context/project.md` as the persistent source of truth
+- Offer to `@import` that file so every session loads it: into the project `CLAUDE.md` when this setup is shared, or into `.claude/CLAUDE.md` / `CLAUDE.local.md` when `.claude/` is gitignored and personal
 
 ## After Setup
 
@@ -52,7 +53,11 @@ integrations → External services
 | `resume-handoff` | Resume from handoff |
 | `recent` | Git-powered recent change analysis |
 
-Skills self-trigger on relevant requests, or invoke one directly by name (e.g. `/overview`). See `.claude/skills/README.md` for the full workflow map.
+Skills self-trigger on relevant requests, or invoke one directly by name (e.g. `/overview`). `setup-project` is the exception: it only runs when you invoke it. See `.claude/skills/README.md` for the full workflow map.
+
+## Agents
+
+`.claude/agents/` holds four read-only subagents (`codebase-locator`, `codebase-analyzer`, `pattern-finder`, `thoughts-analyzer`). The search-only ones run on `haiku`; the analyzers inherit your session model, so they follow whichever of Opus or Sonnet you are running.
 
 ## Re-running Setup
 

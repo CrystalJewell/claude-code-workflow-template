@@ -17,7 +17,7 @@ Document and explain existing code. Do NOT suggest improvements.
 1. **Clarify**: If no question provided, ask what to research
 2. **Read mentioned files first** before spawning tasks
 3. **Decompose** question into searchable components
-4. **Spawn parallel research** via Task tool (`subagent_type=Explore`)
+4. **Spawn parallel research** via the Agent tool (`subagent_type=Explore`)
 5. **Synthesize** findings, prioritizing live code over cached context
 6. **Write** research doc to `.claude/thoughts/research/YYYY-MM-DD-topic.md`
 7. **Present** concise summary

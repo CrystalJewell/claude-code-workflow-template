@@ -1,8 +1,8 @@
 # Project: {{PROJECT_NAME}}
-**Generated**: {{DATE}} | **Re-run `/setup_project` to update**
+**Generated**: {{DATE}} | **Re-run the `setup-project` skill to update**
 
 > This file is the source of truth for all `.claude/` templates.
-> Edit directly to correct anything `/setup_project` got wrong.
+> Edit directly to correct anything the `setup-project` skill got wrong.
 
 ## Description
 
