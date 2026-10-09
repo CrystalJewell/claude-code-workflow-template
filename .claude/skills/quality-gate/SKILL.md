@@ -52,7 +52,7 @@ All checks cover the whole of each touched file, never only the changed lines.
 - **suppressions**: an added suppression line needs a recorded approval before it passes.
 - **legacy-patterns**: every touched file is scanned in full for the project's legacy patterns. The row is `decide-and-log` because pre-existing occurrences in a touched file are reported too; an occurrence on a line this branch added is `never`.
 - **format, security, tests**: the project's own commands.
-- **outside-plan**: touched files that the plan's `**Files:**` blocks do not name.
+- **outside-plan**: touched files that the plan does not list. The plan's file list is every backticked path on a bullet starting with `- Create:`, `- Modify:` or `- Test:`, normally inside a `**Files:**` block, with a trailing `:line` or `:line-line` dropped.
 
 ## Output Edge Cases
 
@@ -74,6 +74,8 @@ Both files are written only after the user approves.
   ```
   Put the written justification beside it.
 
+Both paths default to `.claude/thoughts/`, which projects usually gitignore, so the files exist only on the machine that wrote them and the gate can give different results on other machines or in review. A team that needs them shared should point `deferral_list` and `approvals_file` at tracked paths.
+
 ## Configuration
 
 The gate reads `.claude/context/quality-gate.conf`, written by the setup-project skill. One `key=value` per line. Repeatable keys use `key+=value`. A value may contain `=`.
@@ -91,7 +93,7 @@ The gate reads `.claude/context/quality-gate.conf`, written by the setup-project
 | `format_cmd` | Formatter check command |
 | `security_cmd` | Security scanner command |
 | `test_cmd` | Test command |
-| `plan_files_cmd` | Prints the plan's file list for a plan path. Default reads `**Files:**` blocks |
+| `plan_files_cmd` | Prints the plan's file list for a plan path. Default reads the backticked paths on `- Create:`, `- Modify:` and `- Test:` bullets, dropping a trailing `:line` or `:line-line` |
 | `deferral_list` | Path of the deferral list |
 | `approvals_file` | Path of the approvals file |
 
