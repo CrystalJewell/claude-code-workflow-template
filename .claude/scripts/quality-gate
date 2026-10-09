@@ -254,7 +254,11 @@ check_legacy_patterns() {
     return
   fi
   findings="$WORK_DIR/legacy.out"
+  added_findings="$WORK_DIR/legacy-added.out"
+  added="$WORK_DIR/legacy-added.tsv"
   : > "$findings"
+  : > "$added_findings"
+  collect_added_lines > "$added"
   printf '%s\n' "$entries" | while IFS= read -r entry; do
     regex=${entry% => *}
     replacement=${entry##* => }
@@ -263,8 +267,16 @@ check_legacy_patterns() {
         printf '%s:%s use: %s\n' "$path" "$line_number" "$replacement" >> "$findings"
       done
     done < "$TOUCHED"
+    LEGACY="$regex" awk -F"$TAB" -v replacement="$replacement" '
+      { text = substr($0, index($0, "\t") + 1); if (text ~ ENVIRON["LEGACY"]) printf "%s use: %s\n", $1, replacement }' "$added" >> "$added_findings"
   done
-  if [ -s "$findings" ]; then
+  added_count=$(wc -l < "$added_findings" | tr -d ' ')
+  preexisting_count=$(( $(wc -l < "$findings" | tr -d ' ') - added_count ))
+  if [ "$added_count" -gt 0 ]; then
+    detail="$added_count on added lines, e.g. $(head -n 1 "$added_findings")"
+    [ "$preexisting_count" -gt 0 ] && detail="$detail; $preexisting_count more already in touched files"
+    record legacy-patterns FAIL never "$detail"
+  elif [ -s "$findings" ]; then
     record legacy-patterns FAIL decide-and-log "$(wc -l < "$findings" | tr -d ' ') found, e.g. $(first_items < "$findings")"
   else
     record legacy-patterns PASS decide-and-log "no legacy patterns in touched files"

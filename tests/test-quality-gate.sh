@@ -128,6 +128,30 @@ printf 'changed = 1\n' >> lib/touched.txt
 run_gate
 expect "a legacy pattern on an untouched line of a touched file fails" 1 "lib/touched.txt:2 use: use { } interpolation"
 
+new_repo legacy_on_added_line
+write_config "legacy_pattern+=<%= => use { } interpolation" "source_pattern=^lib/"
+printf 'fresh = <%%= value %%>\n' >> lib/touched.txt
+run_gate
+never_fail_row=$(printf '%-18s %-15s %-18s' legacy-patterns FAIL never)
+expect "a legacy pattern on an added line fails with tier never" 1 "$never_fail_row 1 on added lines, e.g. lib/touched.txt use: use { } interpolation"
+
+new_repo legacy_added_and_preexisting
+printf 'old = <%%= value %%>\n' >> lib/touched.txt
+git add lib && git commit -q -m "chore: legacy" && git checkout -q main && git merge -q feature && git checkout -q -b feature2
+write_config "legacy_pattern+=<%= => use { } interpolation" "source_pattern=^lib/"
+printf 'fresh = <%%= value %%>\n' >> lib/touched.txt
+run_gate
+expect "added-line legacy hits also report the pre-existing count" 1 "1 more already in touched files"
+
+new_repo legacy_preexisting_stays_decide_and_log
+printf 'old = <%%= value %%>\n' >> lib/touched.txt
+git add lib && git commit -q -m "chore: legacy" && git checkout -q main && git merge -q feature && git checkout -q -b feature2
+write_config "legacy_pattern+=<%= => use { } interpolation" "source_pattern=^lib/"
+printf 'changed = 1\n' >> lib/touched.txt
+run_gate
+decide_fail_row=$(printf '%-18s %-15s %-18s' legacy-patterns FAIL decide-and-log)
+expect "a pre-existing legacy pattern keeps the decide-and-log tier" 1 "$decide_fail_row"
+
 new_repo standard_commands
 write_config "format_cmd=exit 0" "test_cmd=echo 2 failures; exit 1" "source_pattern=^lib/"
 printf 'changed = 1\n' >> lib/touched.txt
