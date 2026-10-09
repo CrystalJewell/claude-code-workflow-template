@@ -25,6 +25,7 @@ assert_contains .claude/agents/visual-guard.md "[FAIL - REJECTED]"
 assert_contains .claude/agents/visual-guard.md "[WARN]"
 
 for agent in plan-auditor visual-guard; do
+  assert_contains ".claude/agents/$agent.md" "If a listed path does not exist on this machine, continue without it and say so under Decisions Consulted."
   assert_contains ".claude/agents/$agent.md" "effort: high"
   assert_contains ".claude/agents/$agent.md" "model: inherit"
   assert_contains ".claude/agents/$agent.md" "Never propose the action to take"

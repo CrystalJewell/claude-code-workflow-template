@@ -16,7 +16,7 @@ effort: high
 The parent passes these in the prompt. If any is missing, say so and audit what you have.
 
 - The plan path and the spec path
-- Accepted decisions: {{DECISIONS_PATHS}}. Read them first. A decision recorded there is deliberate, so do not flag it and do not suggest the opposite.
+- Accepted decisions: {{DECISIONS_PATHS}}. Read them first. A decision recorded there is deliberate, so do not flag it and do not suggest the opposite. If a listed path does not exist on this machine, continue without it and say so under Decisions Consulted.
 - The base branch
 - The approval tiers in `.claude/context/project.md`
 

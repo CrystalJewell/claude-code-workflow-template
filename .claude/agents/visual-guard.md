@@ -17,7 +17,7 @@ The parent passes these in the prompt. If any is missing, say so and audit what 
 - The changed UI files and their diff. You have no `git diff` of your own.
 - Design token sources: {{DESIGN_TOKENS_PATHS}}
 - UI file globs: {{UI_GLOBS}}
-- Accepted decisions: {{DECISIONS_PATHS}}. Read them first. A deviation recorded there is deliberate, so do not flag it and do not suggest the opposite.
+- Accepted decisions: {{DECISIONS_PATHS}}. Read them first. A deviation recorded there is deliberate, so do not flag it and do not suggest the opposite. If a listed path does not exist on this machine, continue without it and say so under Decisions Consulted.
 
 ## What to Check
 
