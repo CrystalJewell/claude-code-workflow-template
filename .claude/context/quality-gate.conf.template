@@ -1,0 +1,34 @@
+# Copy to quality-gate.conf. The setup-project skill fills this in from the detected stack.
+# Format: key=value, one per line. Repeatable keys use key+=value. Contract: .claude/skills/quality-gate/SKILL.md
+
+base_ref=main
+# Regex a path must match to be checked. Defaults to every path outside .claude/. Example:
+# source_pattern=\.(ex|exs|js|ts|py)$
+
+# Prints "<path><TAB><count>" per file with issues. Examples:
+# lint_counts_cmd=mix credo list --strict --format json | jq -s -r -f .claude/scripts/adapters/credo-counts.jq
+# lint_counts_cmd=npx eslint . --format json | jq -s -r --arg root "$(pwd -P)/" -f .claude/scripts/adapters/eslint-counts.jq
+# lint_counts_cmd=ruff check . --output-format json | jq -s -r --arg root "$(pwd -P)/" -f .claude/scripts/adapters/ruff-counts.jq
+lint_counts_cmd=
+typecheck_counts_cmd=
+
+# Optional. Exits non-zero when a regression baseline went up.
+baseline_cmd=
+snapshot_file=.claude/context/lint-total.snapshot
+
+# Regexes that match a suppression comment in this stack. Examples: credo:disable, noqa, eslint-disable, @ts-ignore
+# suppression_pattern+=credo:disable
+
+# Legacy patterns to remove from any touched file, written as "regex => replacement".
+# The entry is split at the last " => ": the regex may contain " => " (Elixir maps), the replacement may not.
+# legacy_pattern+=OldHelper\. => NewHelper.
+
+format_cmd=
+security_cmd=
+test_cmd=
+
+# Override only when plans do not list files in "**Files:**" blocks.
+plan_files_cmd=
+
+deferral_list=.claude/thoughts/deferrals.md
+approvals_file=.claude/thoughts/gate-approvals.md

@@ -93,3 +93,69 @@ that are project-specific and won't be obvious from reading the code. -->
 | Worker / job | `{{WORKER_SEARCH_PATTERN}}` |
 | Transaction | `{{TRANSACTION_PATTERN}}` |
 | External integration | `{{INTEGRATION_GREP_PATTERN}}` |
+
+## Search Tools
+
+Tools the agents use to search this project: `{{SEARCH_TOOLS}}`
+
+## Quality Gates
+
+Detected by the `setup-project` skill. The commands the quality gate runs live in `.claude/context/quality-gate.conf`.
+
+| Capability | Command or tool |
+|------------|-----------------|
+| Linter with per-file counts | {{LINT_COUNTS_COMMAND}} |
+| Type checker | {{TYPECHECK_COMMAND}} |
+| Security scanner | {{SECURITY_COMMAND}} |
+| Formatter | {{FORMAT_COMMAND}} |
+| Tests | {{TEST_COMMAND}} |
+| Regression baseline | {{BASELINE_DESCRIPTION}} |
+
+Suppression syntax: {{SUPPRESSION_PATTERNS}}
+
+Deferral list: `{{DEFERRAL_LIST}}`
+
+### Legacy Patterns
+
+Patterns removed from every touched file, written as `regex => replacement`.
+
+{{LEGACY_PATTERNS}}
+
+## UI
+
+| Property | Value |
+|----------|-------|
+| UI file globs | `{{UI_GLOBS}}` |
+| Design token sources | {{DESIGN_TOKENS_PATHS}} |
+
+## Accepted Decisions
+
+Settled rulings that agents must not re-raise or contradict are read from: {{DECISIONS_PATHS}}
+
+## Approval Tiers
+
+How findings are handled. The quality gate and the agents tag every finding with a tier. They never choose the action.
+
+| Tier | Examples | Behaviour |
+|------|----------|-----------|
+| decide-and-log | Stale line references, naming, docs, tests for unreached branches, fixes inside touched files | The controller acts and records it in the ledger |
+| batch | Deferred minors, follow-up candidates, design-review findings | Surfaced at a natural break, never a gate |
+| needs-approval | Schema or migration changes, public API changes, new dependencies, new design tokens, {{PROTECTED_AREAS}}, departures from the spec or plan, scope additions, any new suppression | Only the dependent work waits. Independent work continues |
+| never | A regression baseline going up, copying a legacy pattern into new code | Not approvable |
+| stop | Irreversible or destructive operations, security-sensitive actions, side effects outside the worktree, a plan broken so that every path is a guess | Stop and ask |
+
+### Gate Row Tiers
+
+The quality gate's `tier` column classifies each row. The five tiers above are the approval policy.
+
+| Gate row tier | Policy tier |
+|---------------|-------------|
+| `none` | No action needed |
+| `decide-and-log` | decide-and-log |
+| `needs-approval` | needs-approval |
+| `never` | never. Not approvable, so fix the regression rather than ask |
+| `controller-classifies` | The controller picks one of the five policy tiers for the row. Files outside the plan can be decide-and-log, batch, needs-approval, or stop |
+
+`batch` and `stop` are policy-only tiers. The gate never emits them.
+
+The legacy-patterns row is `decide-and-log` because pre-existing occurrences in a touched file are reported too; an occurrence on a line this branch added is `never`.

@@ -17,7 +17,7 @@ Verify plan was executed correctly.
 1. **Load plan**: If no path, list recent from `.claude/thoughts/plans/`
 2. **Gather evidence** (parallel):
    - Git: `git log --oneline -10`, `git diff HEAD~N..HEAD --name-only`
-   - Tests: `{{TEST_COMMAND}}`, `{{LINT_COMMAND}}`
+   - Gate: the quality-gate skill with `--plan <plan path>`, which covers tests, lint, formatting, and the whole-file rule
    - Files: Read each mentioned file, verify changes exist
 3. **Validate each phase**:
    - Check `[x]` markers
@@ -25,7 +25,9 @@ Verify plan was executed correctly.
    - Run automated criteria
    - List manual criteria needing confirmation
 4. **Check for regressions**: Unexpected file changes, unrelated test failures
-5. **Generate report**
+5. **Review the UI** when the diff touches `{{UI_GLOBS}}`: dispatch the visual-guard agent with the changed files and the diff, and confirm the project's design-review passes ran, naming where
+6. **Check scale**: for a large diff, suggest the simplify skill before shipping
+7. **Generate report**
 
 ## Output Format
 
@@ -60,6 +62,7 @@ Verify plan was executed correctly.
 - [ ] All phases marked complete
 - [ ] `{{TEST_COMMAND}}` passes
 - [ ] `{{LINT_COMMAND}}` passes
+- [ ] The quality gate result is recorded, and when the project has UI globs (`{{UI_GLOBS}}`), the visual-guard verdict is recorded
 - [ ] Follows existing patterns
 - [ ] New code has tests
 

@@ -21,8 +21,9 @@ Create detailed, actionable plans through structured research.
    - Automated: `{{TEST_COMMAND}}`, `{{LINT_COMMAND}}`
    - Manual: UI behavior, edge cases
 5. **Write plan** to `.claude/thoughts/plans/YYYY-MM-DD-description.md`
-6. **Consult the advisor** if one is available: a plan is cheapest to correct before approval
-7. **Present summary** for approval
+6. **Audit the plan**: dispatch the plan-auditor agent with the plan path, the spec path, the accepted-decisions paths from `.claude/context/project.md`, and the base branch. Resolve every finding before presenting
+7. **Consult the advisor** if one is available: a plan is cheapest to correct before approval
+8. **Present summary** for approval
 
 ## Plan Template
 
@@ -41,12 +42,28 @@ Create detailed, actionable plans through structured research.
 
 ---
 ## Phase 1: [Name]
+**Files:**
+- Modify: `path/file.{{FILE_EXT}}`
+- Test: `{{TEST_DIR}}/path/file.{{TEST_EXT}}`
+
 ### Changes
-- [ ] `path/file.{{FILE_EXT}}` - [change]
+- [ ] [change, with the exact detail an implementer needs]
 
 ### Success Criteria
 - [ ] `{{TEST_COMMAND}} {{TEST_DIR}}/path/` passes
+- [ ] The quality-gate skill passes for the files this phase touches
 - [ ] [Manual verification]
+
+---
+## Final Phase: Whole-File Cleanup
+**Files:**
+- Modify: `every/file/the/plan/touches`
+
+### Changes
+- [ ] Fix everything the quality-gate skill reports in each of those files, whole file and not just the changed lines
+
+### Success Criteria
+- [ ] The quality-gate skill reports no FAIL and no NEEDS-APPROVAL
 
 ---
 ## Risks

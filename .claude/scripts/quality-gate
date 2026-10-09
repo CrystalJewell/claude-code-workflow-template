@@ -1,0 +1,350 @@
+#!/bin/sh
+# Language-agnostic quality gate. The contract lives in .claude/skills/quality-gate/SKILL.md.
+# Exit codes: 0 all clear, 1 at least one FAIL, 2 no FAIL but approval needed, 64 usage error.
+set -u
+
+CONFIG_FILE=".claude/context/quality-gate.conf"
+PLAN_FILE=""
+BASE_OVERRIDE=""
+QUICK=0
+UPDATE_SNAPSHOT=0
+TAB=$(printf '\t')
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --config|--plan|--base)
+      [ $# -ge 2 ] || { echo "missing value for $1" >&2; exit 64; }
+      case "$1" in
+        --config) CONFIG_FILE="$2" ;;
+        --plan) PLAN_FILE="$2" ;;
+        --base) BASE_OVERRIDE="$2" ;;
+      esac
+      shift 2 ;;
+    --quick) QUICK=1; shift ;;
+    --update-snapshot) UPDATE_SNAPSHOT=1; shift ;;
+    *) echo "unknown option: $1" >&2; exit 64 ;;
+  esac
+done
+
+# Relative paths in the config and the git queries assume the root; elsewhere every row would SKIP and read as clean.
+# The prefix is empty at the root, so no path spellings are compared (macOS keeps typed capitalisation).
+if [ -n "$(git rev-parse --show-prefix 2> /dev/null)" ]; then
+  echo "run the gate from the repository root: $(git rev-parse --show-toplevel)" >&2
+  exit 64
+fi
+
+WORK_DIR=$(mktemp -d)
+trap 'rm -rf "$WORK_DIR"' EXIT
+RESULTS="$WORK_DIR/results"
+TOUCHED="$WORK_DIR/touched"
+: > "$RESULTS"
+
+CONFIG_PRESENT=1
+REQUESTED_CONFIG="$CONFIG_FILE"
+[ -f "$CONFIG_FILE" ] || { CONFIG_PRESENT=0; CONFIG_FILE=/dev/null; }
+
+config_values() {
+  awk -v key="$1" '
+    /^[[:space:]]*(#|$)/ { next }
+    {
+      separator = index($0, "=")
+      if (separator == 0) next
+      name = substr($0, 1, separator - 1)
+      value = substr($0, separator + 1)
+      sub(/\+$/, "", name)
+      gsub(/[[:space:]]/, "", name)
+      if (name == key) print value
+    }' "$CONFIG_FILE"
+}
+
+config_value() {
+  config_values "$1" | tail -n 1
+}
+
+record() {
+  printf '%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" >> "$RESULTS"
+}
+
+first_items() {
+  head -n 3 | tr '\n' ' ' | sed 's/ *$//'
+}
+
+BASE_REF=${BASE_OVERRIDE:-$(config_value base_ref)}
+BASE_REF=${BASE_REF:-main}
+SOURCE_PATTERN=$(config_value source_pattern)
+SOURCE_PATTERN=${SOURCE_PATTERN:-.}
+DEFERRAL_LIST=$(config_value deferral_list)
+DEFERRAL_LIST=${DEFERRAL_LIST:-.claude/thoughts/deferrals.md}
+APPROVALS_FILE=$(config_value approvals_file)
+APPROVALS_FILE=${APPROVALS_FILE:-.claude/thoughts/gate-approvals.md}
+
+git_plain() {
+  git -c core.quotePath=false "$@"
+}
+
+base_resolves() {
+  git rev-parse --verify --quiet "$BASE_REF" > /dev/null
+}
+
+# A repo with no commits has no HEAD; the empty tree makes every indexed file count as added.
+working_tree_baseline() {
+  if git rev-parse --verify --quiet HEAD > /dev/null; then
+    printf 'HEAD\n'
+  else
+    git hash-object -t tree /dev/null
+  fi
+}
+
+list_touched_files() {
+  {
+    if base_resolves; then
+      git_plain diff --name-only --diff-filter=ACMR "$BASE_REF"...HEAD
+    fi
+    git_plain diff --name-only --diff-filter=ACMR "$(working_tree_baseline)"
+    git_plain ls-files --others --exclude-standard
+  } | sort -u | while IFS= read -r path; do
+    [ -f "$path" ] && printf '%s\n' "$path"
+  done
+}
+
+list_touched_files | grep -v '^\.claude/' | grep -E -- "$SOURCE_PATTERN" > "$TOUCHED" || true
+
+is_deferred() {
+  [ -f "$DEFERRAL_LIST" ] && grep -Fq -- "$1" "$DEFERRAL_LIST"
+}
+
+counts_file_for() {
+  printf '%s/%s.counts' "$WORK_DIR" "$1"
+}
+
+check_residual_issues() {
+  check_name="$1"
+  command_key="$2"
+  command_line=$(config_value "$command_key")
+  if [ -z "$command_line" ]; then
+    record "$check_name" SKIP none "not configured for this project"
+    return
+  fi
+  counts=$(counts_file_for "$command_key")
+  if ! sh -c "$command_line" > "$counts" 2> "$WORK_DIR/$command_key.err"; then
+    : > "$WORK_DIR/$command_key.failed"
+    record "$check_name" FAIL decide-and-log "command failed: $(tail -n 1 "$WORK_DIR/$command_key.err")"
+    return
+  fi
+  offenders=""
+  while IFS="$TAB" read -r path count; do
+    [ -n "$path" ] || continue
+    grep -Fxq -- "$path" "$TOUCHED" || continue
+    [ "$count" -gt 0 ] 2> /dev/null || continue
+    is_deferred "$path" && continue
+    offenders="$offenders $path($count)"
+  done < "$counts"
+  if [ -z "$offenders" ]; then
+    record "$check_name" PASS decide-and-log "every touched file is clean"
+  else
+    record "$check_name" FAIL decide-and-log "files with issues:$offenders"
+  fi
+}
+
+check_regression() {
+  baseline_command=$(config_value baseline_cmd)
+  if [ -n "$baseline_command" ]; then
+    if sh -c "$baseline_command" > "$WORK_DIR/baseline.out" 2>&1; then
+      record regression PASS never "baseline did not increase"
+    else
+      record regression FAIL never "baseline increased: $(tail -n 1 "$WORK_DIR/baseline.out")"
+    fi
+    return
+  fi
+  lint_command=$(config_value lint_counts_cmd)
+  if [ -z "$lint_command" ]; then
+    record regression SKIP none "no baseline or linter configured"
+    return
+  fi
+  if [ -f "$WORK_DIR/lint_counts_cmd.failed" ]; then
+    record regression FAIL never "linter failed; project total not measured"
+    return
+  fi
+  counts=$(counts_file_for lint_counts_cmd)
+  total=$(awk -F"$TAB" '{ sum += $2 } END { print sum + 0 }' "$counts")
+  snapshot=$(config_value snapshot_file)
+  snapshot=${snapshot:-.claude/context/lint-total.snapshot}
+  if [ ! -f "$snapshot" ]; then
+    if printf '%s\n' "$total" > "$snapshot"; then
+      record regression PASS never "snapshot created at $total"
+    else
+      record regression FAIL never "could not write $snapshot"
+    fi
+    return
+  fi
+  previous=$(cat "$snapshot")
+  case "$previous" in
+    ''|*[!0-9]*)
+      record regression FAIL never "snapshot unreadable: $snapshot does not hold a single number"
+      return ;;
+  esac
+  if [ "$total" -gt "$previous" ]; then
+    record regression FAIL never "project total rose from $previous to $total"
+  elif [ "$total" -lt "$previous" ]; then
+    if [ "$UPDATE_SNAPSHOT" -eq 1 ]; then
+      printf '%s\n' "$total" > "$snapshot"
+      record regression PASS never "total fell from $previous to $total; snapshot updated"
+    else
+      record regression PASS never "total fell from $previous to $total; rerun with --update-snapshot to bank it"
+    fi
+  else
+    record regression PASS never "total unchanged at $total"
+  fi
+}
+
+emit_added_lines() {
+  awk '
+    /^\+\+\+ b\// { path = substr($0, 7); next }
+    /^\+\+\+ / { path = ""; next }
+    /^\+/ && path != "" { printf "%s\t%s\n", path, substr($0, 2) }'
+}
+
+collect_added_lines() {
+  {
+    if base_resolves; then
+      git_plain diff -U0 --no-color "$BASE_REF"...HEAD
+    fi
+    git_plain diff -U0 --no-color "$(working_tree_baseline)"
+    git_plain ls-files --others --exclude-standard | while IFS= read -r path; do
+      git_plain diff --no-index -U0 --no-color -- /dev/null "$path" || true
+    done
+  } | emit_added_lines | awk -F"$TAB" 'NR == FNR { touched[$0] = 1; next } ($1 in touched)' "$TOUCHED" -
+}
+
+check_new_suppressions() {
+  patterns=$(config_values suppression_pattern)
+  if [ -z "$patterns" ]; then
+    record suppressions SKIP none "no suppression syntax configured"
+    return
+  fi
+  added="$WORK_DIR/added.tsv"
+  collect_added_lines > "$added"
+  matches="$WORK_DIR/suppressions.tsv"
+  : > "$matches"
+  printf '%s\n' "$patterns" | while IFS= read -r pattern; do
+    [ -n "$pattern" ] || continue
+    SUPPRESSION="$pattern" awk -F"$TAB" '
+      { text = substr($0, index($0, "\t") + 1); if (text ~ ENVIRON["SUPPRESSION"]) print }' "$added" >> "$matches"
+  done
+  unapproved="$WORK_DIR/unapproved"
+  : > "$unapproved"
+  sort -u "$matches" | while IFS="$TAB" read -r path text; do
+    trimmed=$(printf '%s' "$text" | sed 's/^[[:space:]]*//; s/[[:space:]]*$//')
+    if [ -f "$APPROVALS_FILE" ] && grep -Fxq -- "approved-suppression: $path :: $trimmed" "$APPROVALS_FILE"; then
+      continue
+    fi
+    printf '%s: %s\n' "$path" "$trimmed" >> "$unapproved"
+  done
+  if [ -s "$unapproved" ]; then
+    record suppressions NEEDS-APPROVAL needs-approval "$(wc -l < "$unapproved" | tr -d ' ') unapproved, e.g. $(first_items < "$unapproved")"
+  else
+    record suppressions PASS needs-approval "no unapproved suppressions added"
+  fi
+}
+
+check_legacy_patterns() {
+  entries=$(config_values legacy_pattern)
+  if [ -z "$entries" ]; then
+    record legacy-patterns SKIP none "no legacy patterns configured"
+    return
+  fi
+  findings="$WORK_DIR/legacy.out"
+  : > "$findings"
+  printf '%s\n' "$entries" | while IFS= read -r entry; do
+    regex=${entry% => *}
+    replacement=${entry##* => }
+    while IFS= read -r path; do
+      grep -nE -- "$regex" "$path" | cut -d: -f1 | while IFS= read -r line_number; do
+        printf '%s:%s use: %s\n' "$path" "$line_number" "$replacement" >> "$findings"
+      done
+    done < "$TOUCHED"
+  done
+  if [ -s "$findings" ]; then
+    record legacy-patterns FAIL decide-and-log "$(wc -l < "$findings" | tr -d ' ') found, e.g. $(first_items < "$findings")"
+  else
+    record legacy-patterns PASS decide-and-log "no legacy patterns in touched files"
+  fi
+}
+
+check_command() {
+  check_name="$1"
+  command_key="$2"
+  command_line=$(config_value "$command_key")
+  if [ -z "$command_line" ]; then
+    record "$check_name" SKIP none "not configured for this project"
+    return
+  fi
+  output="$WORK_DIR/$command_key.out"
+  if sh -c "$command_line" > "$output" 2>&1; then
+    record "$check_name" PASS decide-and-log "passed"
+  else
+    record "$check_name" FAIL decide-and-log "$(tail -n 3 "$output" | tr '\n' ' ')"
+  fi
+}
+
+planned_files() {
+  custom=$(config_value plan_files_cmd)
+  if [ -n "$custom" ]; then
+    sh -c "$custom \"\$1\"" sh "$PLAN_FILE"
+    return
+  fi
+  awk '
+    /^[[:space:]]*-[[:space:]]+(Create|Modify|Test):/ {
+      line = $0
+      while (match(line, /`[^`]+`/)) {
+        token = substr(line, RSTART + 1, RLENGTH - 2)
+        sub(/:[0-9]+(-[0-9]+)?$/, "", token)
+        print token
+        line = substr(line, RSTART + RLENGTH)
+      }
+    }' "$PLAN_FILE"
+}
+
+check_outside_plan() {
+  [ -n "$PLAN_FILE" ] || return
+  if [ ! -f "$PLAN_FILE" ]; then
+    record outside-plan SKIP none "plan file not found: $PLAN_FILE"
+    return
+  fi
+  planned="$WORK_DIR/planned"
+  planned_files | sort -u > "$planned"
+  outside="$WORK_DIR/outside"
+  grep -Fxv -f "$planned" "$TOUCHED" > "$outside" || true
+  if [ -s "$outside" ]; then
+    record outside-plan INFO controller-classifies "$(wc -l < "$outside" | tr -d ' ') not in plan: $(first_items < "$outside")"
+  else
+    record outside-plan PASS controller-classifies "every touched file is in the plan"
+  fi
+}
+
+if [ "$CONFIG_PRESENT" -eq 0 ]; then
+  record config SKIP none "no config at $REQUESTED_CONFIG; project checks skipped (see the setup-project skill)"
+fi
+if ! base_resolves; then
+  record base-ref INFO none "base $BASE_REF not found; committed changes not checked"
+fi
+
+check_residual_issues lint lint_counts_cmd
+check_regression
+check_new_suppressions
+check_legacy_patterns
+check_command format format_cmd
+if [ "$QUICK" -eq 1 ]; then
+  record typecheck SKIP none "skipped in --quick"
+  record security SKIP none "skipped in --quick"
+  record tests SKIP none "skipped in --quick"
+else
+  check_residual_issues typecheck typecheck_counts_cmd
+  check_command security security_cmd
+  check_command tests test_cmd
+fi
+check_outside_plan
+
+printf '%-18s %-15s %-18s %s\n' CHECK STATUS TIER DETAIL
+awk -F"$TAB" '{ printf "%-18s %-15s %-18s %s\n", $1, $2, $3, $4 }' "$RESULTS"
+awk -F"$TAB" '$2 == "FAIL" { failed = 1 } $2 == "NEEDS-APPROVAL" { needs = 1 } END { if (failed) exit 1; if (needs) exit 2; exit 0 }' "$RESULTS"

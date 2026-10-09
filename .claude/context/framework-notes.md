@@ -14,7 +14,7 @@ FILE_EXT=ex
 TEST_EXT=exs
 MIGRATION_EXT=exs
 TEST_COMMAND=mix test
-LINT_COMMAND=mix checks
+LINT_COMMAND=mix credo --strict
 FORMAT_COMMAND=mix format
 TRANSACTION_PATTERN=Ecto\.Multi|Multi\.new
 ERROR_CHAIN_PATTERN=with \{:
@@ -60,6 +60,19 @@ INTEGRATION_GREP_PATTERN=Stripe\.|Discord\.|ExAws
 | Mox | `expect(\|stub(` |
 ```
 
+### Quality Gate
+
+```
+lint_counts_cmd=mix credo list --strict --format json | jq -s -r -f .claude/scripts/adapters/credo-counts.jq
+format_cmd=mix format --check-formatted
+security_cmd=mix sobelow --exit Low
+test_cmd=mix test
+suppression_pattern+=credo:disable
+suppression_pattern+=sobelow_skip
+```
+
+Credo's consistency checks change their results when given a path, so the command runs on the whole project and the adapter filters by file.
+
 ---
 
 ## JavaScript / TypeScript (Node / Next.js / Express)
@@ -102,6 +115,17 @@ INTEGRATION_GREP_PATTERN=stripe\.|discord\.|@aws-sdk
 **Workers** (`{{WORKERS_DIR}}`): Queue name, concurrency, retry logic, job handlers
 ```
 
+### Quality Gate
+
+```
+lint_counts_cmd=npx eslint . --format json | jq -s -r --arg root "$(pwd -P)/" -f .claude/scripts/adapters/eslint-counts.jq
+format_cmd=npx prettier --check .
+test_cmd=npm test
+suppression_pattern+=eslint-disable
+suppression_pattern+=@ts-ignore
+suppression_pattern+=@ts-expect-error
+```
+
 ---
 
 ## Python (Django / FastAPI / Flask)
@@ -142,4 +166,16 @@ INTEGRATION_GREP_PATTERN=stripe\.|discord\.|boto3
 **Services / Repositories** (`{{LIB_DIR}}`): Business logic, ORM queries, external service calls
 **Views / Handlers** (`{{WEB_DIR}}`): Request parsing, serializers, permission checks
 **Tasks / Workers** (`{{WORKERS_DIR}}`): Celery/RQ task config, retry policy, task chains
+```
+
+### Quality Gate
+
+```
+lint_counts_cmd=ruff check . --output-format json | jq -s -r --arg root "$(pwd -P)/" -f .claude/scripts/adapters/ruff-counts.jq
+format_cmd=ruff format --check .
+security_cmd=bandit -r . -q
+test_cmd=pytest
+suppression_pattern+=# noqa
+suppression_pattern+=# type: ignore
+suppression_pattern+=# nosec
 ```

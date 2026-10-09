@@ -1,0 +1,10 @@
+diff --git a/templates/card.html b/templates/card.html
+--- a/templates/card.html
++++ b/templates/card.html
+@@ -10,3 +10,6 @@
+ <div class="card border-rose-400 p-4">
+   <h2 class="text-lg">Title</h2>
++  <aside class="w-[320px] mt-[37px] text-[#ff00ff] float-left">
++    <p>Related</p>
++  </aside>
+ </div>

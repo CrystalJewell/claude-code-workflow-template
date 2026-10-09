@@ -15,6 +15,7 @@ Skills for common development workflows.
 | `create-plan` | Create a structured implementation plan |
 | `implement-plan` | Execute a plan phase by phase |
 | `validate-plan` | Verify implementation matches plan |
+| `quality-gate` | Check every touched file against the project's linters, baselines, and legacy patterns |
 | `commit` | Generate structured commit messages |
 | `describe-pr` | Generate PR descriptions |
 
@@ -37,6 +38,13 @@ Skills for common development workflows.
 | `glossary` | Domain terminology reference |
 | `recent` | Recent git changes in an area |
 
+## Review Agents
+
+| Agent | Description |
+|-------|-------------|
+| `plan-auditor` | Audit a plan from a fresh context before it is executed |
+| `visual-guard` | Audit changed UI files against design tokens before commit |
+
 ## Debugging Skills
 
 | Skill | Description |
@@ -58,7 +66,10 @@ overview        → orient
 schema          → understand data
 impact          → before changes
 create-plan     → design
+plan-auditor    → audit the plan (agent)
 implement-plan  → build
+quality-gate   → check touched files
+visual-guard    → audit UI changes (agent, UI projects)
 validate-plan   → verify
 commit          → save
 describe-pr     → ship

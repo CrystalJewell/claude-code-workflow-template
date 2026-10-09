@@ -20,15 +20,15 @@ Execute approved plans phase by phase with verification.
 4. **For each phase**:
    - Announce phase and changes
    - Read files before modifying
-   - If reality differs from plan, stop and ask
-   - Run `{{TEST_COMMAND}}` and `{{LINT_COMMAND}}` after changes
+   - If reality differs from the plan, classify it by tier as described in Handling Obstacles: decide and log low-risk deviations, ask only for needs-approval or stop
+   - Run the quality-gate skill with `--plan <plan path>` after changes. A clean gate means continue without pausing. Handle findings by their tier in the Approval Tiers of `.claude/context/project.md`. Only a needs-approval or stop finding waits for the user, and independent tasks keep going
    - Mark items complete in plan: `- [x] file.{{FILE_EXT}} ✓`
    - Pause for manual verification if needed
 5. **On completion**: Run full test suite, update plan status, consult the advisor if one is available, present summary
 
 ## Handling Obstacles
 
-If implementation differs from plan:
+If implementation differs from the plan, classify the deviation by tier. Decide and log the low-risk ones. For a needs-approval deviation, ask:
 > Issue: [what's different]
 > Options: 1) [option] 2) [option]
 > Which approach?

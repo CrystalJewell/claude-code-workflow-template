@@ -21,7 +21,8 @@ Investigate without modifying. Understand problems, then decide how to proceed.
    - Locate related files using the codebase-locator agent
 3. **Trace error**: Find source, read code, trace call stack
 4. **Check common issues** (see below)
-5. **Form hypothesis** with evidence and verification steps
+5. **Check the UI layer** when the symptom is visual or the suspect files match `{{UI_GLOBS}}`: dispatch the visual-guard agent with those files
+6. **Form hypothesis** with evidence and verification steps
 
 ## Common Issues by Layer
 
